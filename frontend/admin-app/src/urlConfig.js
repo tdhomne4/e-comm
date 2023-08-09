@@ -1,2 +1,2 @@
-const api = 'http://localhost:2005/api';
+const api = "http://localhost:2006/api";
 export default api;
