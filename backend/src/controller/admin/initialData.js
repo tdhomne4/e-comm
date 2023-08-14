@@ -24,7 +24,6 @@ function createCategories(categories, parentId = null) {
 
 exports.initialData = async (req, res) => {
   const key = req.params.key;
-  console.log(key);
   const page = req.query.page ? parseInt(req.query.page) : 1;
   const limit = req.query.limit ? parseInt(req.query.limit) : 2;
   const skip = (page - 1) * limit;
@@ -64,7 +63,7 @@ exports.initialData = async (req, res) => {
       .populate({ path: "category", select: "_id name" }) //chanini means calling multiple func, fetch data from  foreign key
       .exec();
   }
-  console.log(products, total);
+
   res.status(200).json({
     categories: createCategories(categories),
     products,

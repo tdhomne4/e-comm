@@ -6,9 +6,9 @@ import { Container, Col, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Input from "../../components/UI/Input/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCategory, addCategory } from "../../actions/category.action";
-import { addProduct, getSearchProducts } from "../../actions/products.action";
+import { addProduct } from "../../actions/products.action";
 import "./index.css";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 const Products = ({ getPageQuery }) => {
   const [name, setName] = useState("");
@@ -22,14 +22,34 @@ const Products = ({ getPageQuery }) => {
   const [searchKey, setSearchKey] = useState("");
 
   const product = useSelector((state) => state.product.products.products);
-
   //  const searchProduct = useSelector((state) => state.product.products);
   const total = useSelector((state) => state.product.products.total);
   const limit = 2;
 
-  const handleProductSerach = (e) => {
-    setSearchKey(e.target.value);
-    console.log(searchKey);
+  // const handleProductSerach = (e) => {
+  //   setSearchKey(e.target.value);
+  //   console.log(searchKey);
+  // };
+  const handleOnSearch = (string, results) => {
+    // onSearch will have as the first callback parameter
+    // the string searched and for the second the results.
+    console.log(string, results);
+    setSearchKey(string);
+  };
+
+  const handleOnSelect = (product) => {
+    // the item selected
+    setSearchKey(product.name);
+    console.log(product.name);
+  };
+  const formatResult = (product) => {
+    return (
+      <>
+        <span style={{ display: "block", textAlign: "left" }}>
+          {product?.name}
+        </span>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -39,7 +59,7 @@ const Products = ({ getPageQuery }) => {
 
   const totalCalculateFunc = (total, limit) => {
     let pages = [];
-    for (let x = 1; x <= parseInt(total / limit); x++) {
+    for (let x = 1; x <= Math.ceil(total / 2); x++) {
       pages.push(x);
     }
     return pages;
@@ -241,11 +261,20 @@ const Products = ({ getPageQuery }) => {
                 }}
               >
                 <h3>Products</h3>
-                <input
+                {/* <input
                   type="text"
                   name="search_key"
                   onKeyUp={handleProductSerach}
-                />
+                /> */}
+                <div style={{ width: 400 }}>
+                  <ReactSearchAutocomplete
+                    items={product ? product : null}
+                    onSearch={handleOnSearch}
+                    onSelect={handleOnSelect}
+                    autoFocus
+                    formatResult={formatResult}
+                  />
+                </div>
                 <button className="btn btn-success" onClick={handleShow}>
                   Add Products
                 </button>
